@@ -11,6 +11,14 @@ public class Order {
         //deliveryTime  = HH*60 + MM
     }
 
+    public Order() {
+    }
+
+    public Order(String id, int deliveryTime) {
+        this.id = id;
+        this.deliveryTime = deliveryTime;
+    }
+
     public String getId() {
         return id;
     }
