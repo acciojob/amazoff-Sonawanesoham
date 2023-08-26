@@ -2,7 +2,6 @@ package com.driver;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,30 +14,30 @@ public class OrderService {
         return orderRepository.getOrdersLeftAfterGivenTimeByPartnerId(countOfOrders,httpStatus);
     }
 
-    public Order addOrder(String newOrderAddedSuccessfully, HttpStatus httpStatus) {
-
-        return orderRepository.addOrder(newOrderAddedSuccessfully,httpStatus);
-
-    }
-
-    public Order addPartner(String newDeliveryPartnerAddedSuccessfully, HttpStatus httpStatus) {
-
-        return orderRepository.addPartner(newDeliveryPartnerAddedSuccessfully,httpStatus);
-    }
-
-    public Order addOrderPartnerPair(String s, HttpStatus httpStatus) {
-        return orderRepository.addPartnerPair(s,httpStatus);
-    }
+//    public Order addOrder(String newOrderAddedSuccessfully, HttpStatus httpStatus) {
+//
+//        return orderRepository.addOrder(newOrderAddedSuccessfully,httpStatus);
+//
+//    }
+//
+//    public Order addPartner(String newDeliveryPartnerAddedSuccessfully, HttpStatus httpStatus) {
+//
+//        return orderRepository.addPartner(newDeliveryPartnerAddedSuccessfully,httpStatus);
+//    }
+//
+//    public Order addOrderPartnerPair(String s, HttpStatus httpStatus) {
+//        return orderRepository.addPartnerPair(s,httpStatus);
+//    }
 
     public Order getOrderById(Order order, HttpStatus httpStatus) {
         return orderRepository.getOrderById(order,httpStatus);
     }
 
-    public Order deleteOrderById(String s, HttpStatus httpStatus) {
+    public boolean deleteOrderById(String s, HttpStatus httpStatus) {
         return OrderRepository.deleteOrderById(s,httpStatus);
     }
 
-    public Order deletePartnerById(String s, HttpStatus httpStatus) {
+    public boolean deletePartnerById(String s, HttpStatus httpStatus) {
         return OrderRepository.deletePartnerById(s,httpStatus);
     }
 

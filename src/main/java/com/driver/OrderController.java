@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,24 +22,24 @@ public class OrderController {
     OrderService orderService;
 
 
-    @PostMapping("/add-order")
-    public Order addOrder(@RequestBody Order order){
-
-        return orderService.addOrder("New order added successfully", HttpStatus.CREATED);
-    }
-
-    @PostMapping("/add-partner/{partnerId}")
-    public Order addPartner(@PathVariable String partnerId){
-
-        return orderService.addPartner("New delivery partner added successfully", HttpStatus.CREATED);
-    }
-
-    @PutMapping("/add-order-partner-pair")
-    public Order addOrderPartnerPair(@RequestParam String orderId, @RequestParam String partnerId){
-
-        //This is basically assigning that order to that partnerId
-        return orderService.addOrderPartnerPair("New order-partner pair added successfully", HttpStatus.CREATED);
-    }
+//    @PostMapping("/add-order")
+//    public Order addOrder(@RequestBody Order order){
+//
+//        return orderService.addOrder("New order added successfully", HttpStatus.CREATED);
+//    }
+//
+//    @PostMapping("/add-partner/{partnerId}")
+//    public Order addPartner(@PathVariable String partnerId){
+//
+//        return orderService.addPartner("New delivery partner added successfully", HttpStatus.CREATED);
+//    }
+//
+//    @PutMapping("/add-order-partner-pair")
+//    public Order addOrderPartnerPair(@RequestParam String orderId, @RequestParam String partnerId){
+//
+//        //This is basically assigning that order to that partnerId
+//        return orderService.addOrderPartnerPair("New order-partner pair added successfully", HttpStatus.CREATED);
+//    }
 
     @GetMapping("/get-order-by-id/{orderId}")
     public Order getOrderById(@PathVariable String orderId){
@@ -117,7 +116,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete-partner-by-id/{partnerId}")
-    public Order deletePartnerById(@PathVariable String partnerId){
+    public boolean deletePartnerById(@PathVariable String partnerId){
 
         //Delete the partnerId
         //And push all his assigned orders to unassigned orders.
@@ -126,7 +125,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete-order-by-id/{orderId}")
-    public Order deleteOrderById(@PathVariable String orderId){
+    public boolean deleteOrderById(@PathVariable String orderId){
 
         //Delete an order and also
         // remove it from the assigned order of that partnerId

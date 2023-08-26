@@ -19,6 +19,10 @@ public class Order {
         this.deliveryTime = deliveryTime;
     }
 
+    public static Integer addPartner() {
+        return addPartner();
+    }
+
     public String getId() {
         return id;
     }
