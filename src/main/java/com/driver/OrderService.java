@@ -1,68 +1,70 @@
 package com.driver;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class OrderService {
 
-    @Autowired
-    static OrderRepository orderRepository;
-    public static Order getOrdersLeftAfterGivenTimeByPartnerId(Integer countOfOrders, HttpStatus httpStatus) {
+    OrderRepository orderRepository = new OrderRepository();
 
-        return orderRepository.getOrdersLeftAfterGivenTimeByPartnerId(countOfOrders,httpStatus);
+    public  void addOrder(Order order) {
+        orderRepository.addOrder(order);
     }
 
-//    public Order addOrder(String newOrderAddedSuccessfully, HttpStatus httpStatus) {
-//
-//        return orderRepository.addOrder(newOrderAddedSuccessfully,httpStatus);
-//
-//    }
-//
-//    public Order addPartner(String newDeliveryPartnerAddedSuccessfully, HttpStatus httpStatus) {
-//
-//        return orderRepository.addPartner(newDeliveryPartnerAddedSuccessfully,httpStatus);
-//    }
-//
-//    public Order addOrderPartnerPair(String s, HttpStatus httpStatus) {
-//        return orderRepository.addPartnerPair(s,httpStatus);
-//    }
-
-    public Order getOrderById(Order order, HttpStatus httpStatus) {
-        return orderRepository.getOrderById(order,httpStatus);
+    public  void addPartner(String partnerId) {
+        orderRepository.addPartner(partnerId);
     }
 
-    public boolean deleteOrderById(String s, HttpStatus httpStatus) {
-        return OrderRepository.deleteOrderById(s,httpStatus);
+    public  void addOrderPartnerPair(String orderId, String partnerId) {
+        orderRepository.addOrderPartnerPair(orderId,partnerId);
     }
 
-    public boolean deletePartnerById(String s, HttpStatus httpStatus) {
-        return OrderRepository.deletePartnerById(s,httpStatus);
+    public  Order getOrderById(String orderId) {
+
+        return orderRepository.getOrderById(orderId);
     }
 
-    public Order getLastDeliveryTimeByPartnerId(String time, HttpStatus httpStatus) {
-        return OrderRepository.getLastDeliveryTimeByPartnerId(time,httpStatus);
+    public  DeliveryPartner getPartnerById(String partnerId) {
+
+        return orderRepository.getPartnerById(partnerId);
     }
 
-    public Order getCountOfUnassignedOrders(Integer countOfOrders, HttpStatus httpStatus) {
-        return OrderRepository.getCountOfUnassignedOrders(countOfOrders,httpStatus);
+    public  List<String> getOrdersByPartnerId(String partnerId) {
+        return orderRepository.getOrdersByPartnerId(partnerId);
     }
 
-    public Order getAllOrders(List<String> orders, HttpStatus httpStatus) {
+    public List<String> getAllOrders() {
 
-        return OrderRepository.getAllOrders(orders,httpStatus);
+        return orderRepository.getAllOrders();
     }
 
-    public Order getOrdersByPartnerId(List<String> orders, HttpStatus httpStatus) {
-        return OrderRepository.getOrdersByPartnerId(orders,httpStatus);
+    public  Integer getCountOfUnassignedOrders(){
+        return orderRepository.getCountOfUnassignedOrders();
     }
 
-    public Order getOrderCountByPartnerId(Integer orderCount, HttpStatus httpStatus) {
-        return OrderRepository.getOrderCountByPartnerId(orderCount,httpStatus);
+    public  Integer getOrdersLeftAfterGivenTimeByPartnerId(String time, String partnerId) {
+        int intTime = Integer.parseInt(time.substring(0,2))*60 + Integer.parseInt(time.substring(3));
+
+        return orderRepository.getOrdersLeftAfterGivenTimeByPartnerId(intTime, partnerId);
     }
 
-    public Order getPartnerById(DeliveryPartner deliveryPartner, HttpStatus httpStatus) {
-        return OrderRepository.getPartnerById(deliveryPartner,httpStatus);
+    public  String getLastDeliveryTimeByPartnerId(String partnerId) {
+        return orderRepository.getLastDeliveryTimeByPartnerId(partnerId);
+    }
+
+    public  void deletePartnerById(String partnerId) {
+
+        orderRepository.deletePartnerById(partnerId);
+    }
+
+    public void deleteOrderById(String orderId) {
+        orderRepository.deleteOrderById(orderId);
+    }
+
+    public  Integer getOrderCountByPartnerId(String partnerId) {
+        return orderRepository.getOrderCountByPartnerId(partnerId);
     }
 }

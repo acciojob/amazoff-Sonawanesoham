@@ -1,78 +1,119 @@
 package com.driver;
 
-
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class OrderRepository {
-    
-    
-   static Map<Integer,Order> db = new HashMap<>();
 
-    public static boolean deleteOrderById(String s, HttpStatus httpStatus) {
-        return db.remove(s,httpStatus);
-
+    HashMap<String,Order> orderHashMap= new HashMap<>();
+    HashMap<String,DeliveryPartner> deliveryPartnerHashMap=new HashMap<>();
+    HashMap<String,List<String>> listHashMap = new HashMap<>();
+    HashMap<String,String> assignedOrderMap = new HashMap<>();
+    public void addOrder(Order order) {
+        String orderID= order.getId();
+        orderHashMap.put(orderID,order);
     }
 
-    public static boolean deletePartnerById(String s, HttpStatus httpStatus) {
-        return db.remove(s,httpStatus);
+    public void addPartner(String partnerId) {
+        deliveryPartnerHashMap.put(partnerId, new DeliveryPartner(partnerId));
     }
 
-    public static Order getLastDeliveryTimeByPartnerId(String time, HttpStatus httpStatus) {
-        return db.get(time);
+    public void addOrderPartnerPair(String orderId, String partnerId) {
+        if(orderHashMap.containsKey(orderId) && deliveryPartnerHashMap.containsKey(partnerId))
+        {
+            List<String> orderList=listHashMap.getOrDefault(partnerId,new ArrayList<>());
+            orderList.add(orderId);
+            listHashMap.put(partnerId,orderList);
+        }
+        deliveryPartnerHashMap.get(partnerId).setNumberOfOrders(deliveryPartnerHashMap.get(partnerId).getNumberOfOrders()+1);
+        //Now order has been assigned
+        assignedOrderMap.put(orderId, partnerId);
     }
 
-    public static Order getCountOfUnassignedOrders(Integer countOfOrders, HttpStatus httpStatus) {
-        return db.get(countOfOrders);
+    public Order getOrderById(String orderId) {
+
+        return orderHashMap.get(orderId);
     }
 
-    public static Order getAllOrders(List<String> orders, HttpStatus httpStatus) {
-        return db.get(orders);
+    public DeliveryPartner getPartnerById(String partnerId) {
+        return deliveryPartnerHashMap.get(partnerId);
     }
 
-    public static Order getOrdersByPartnerId(List<String> orders, HttpStatus httpStatus) {
-        return db.get(orders);
+    public List<String> getOrdersByPartnerId(String partnerId) {
+        return listHashMap.get(partnerId);
     }
 
-    public static Order getOrderCountByPartnerId(Integer orderCount, HttpStatus httpStatus) {
-        return db.get(orderCount);
+    public List<String> getAllOrders() {
+
+        return new ArrayList<>(orderHashMap.keySet());
     }
 
-    public static Order getPartnerById(DeliveryPartner deliveryPartner, HttpStatus httpStatus) {
-        return db.get(deliveryPartner);
+    public Integer getCountOfUnassignedOrders() {
+        return orderHashMap.size()-assignedOrderMap.size();
     }
 
-    public Order getOrdersLeftAfterGivenTimeByPartnerId(Integer countOfOrders, HttpStatus httpStatus) {
-        return db.get(countOfOrders);         //httpstatus 
+    public Integer getOrdersLeftAfterGivenTimeByPartnerId(int time, String partnerId) {
+        int count = 0;
 
+        List<String> ordersToCheck = listHashMap.get(partnerId);
+        for(String orderID: ordersToCheck){
+            if(orderHashMap.get(orderID).getDeliveryTime()>time){
+                count++;
+            }
+        }
+        return count;
     }
 
-//    public Order addPartner(String newDeliveryPartnerAddedSuccessfully, HttpStatus httpStatus) {
-//        return db.put(Order.addPartner(),new addPartner());
-//    }
+    public String getLastDeliveryTimeByPartnerId(String partnerId) {
+        List<String> orderList = listHashMap.getOrDefault(partnerId,new ArrayList<>());
+        int last=Integer.MIN_VALUE;
+        if (!orderList.isEmpty()) {
+            for(String order : orderList)
+            {
+                int time =orderHashMap.get(order).getDeliveryTime();
+                last = Math.max(time,last);
+            }
+        }
+        int deliveryTimeInMinutes = last;
+        int hours = deliveryTimeInMinutes / 60;
+        int minutes = deliveryTimeInMinutes % 60;
 
-//    public Order addOrder(String newOrderAddedSuccessfully, HttpStatus httpStatus) {
-//        OrderRepository order = null;
-//        return db.put(order.addOrder(),new Order());
-//
-//    }
+        String HH = ""+hours;
+        String MM = ""+minutes;
 
-//    public Order addPartnerPair(String s, HttpStatus httpStatus) {
-//        OrderRepository order = null;
-//        return db.put(order.addPartnerPair(s,httpStatus),new addPartnerPair());
-//
-//    }
-
-    public Order getOrderById(Order order, HttpStatus httpStatus) {
-        return db.get(order);
+        if(HH.length()==1){
+            HH = '0'+HH;
+        }
+        if(MM.length()==1){
+            MM = '0'+MM;
+        }
+        return HH+':'+MM;
     }
 
-//    public Order addOrder(String newOrderAddedSuccessfully, HttpStatus httpStatus) {
-//        return db.put(addOrder(),httpStatus);   //errp
-//    }
+    public void deletePartnerById(String partnerId) {
+        List<String> orders = listHashMap.get(partnerId);
+
+        for(String order : orders)
+        {
+            assignedOrderMap.remove(order);
+        }
+        deliveryPartnerHashMap.remove(partnerId);
+        listHashMap.remove(partnerId);
+    }
+
+    public void deleteOrderById(String orderId) {
+
+        orderHashMap.remove(orderId);
+        String partnerId = assignedOrderMap.get(orderId);
+        listHashMap.get(partnerId).remove(orderId);
+        deliveryPartnerHashMap.get(partnerId).setNumberOfOrders(deliveryPartnerHashMap.get(partnerId).getNumberOfOrders()-1);
+        assignedOrderMap.remove(orderId);
+    }
+    public Integer getOrderCountByPartnerId(String partnerId) {
+        return deliveryPartnerHashMap.get(partnerId).getNumberOfOrders();
+    }
 }
